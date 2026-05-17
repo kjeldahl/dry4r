@@ -21,7 +21,7 @@ module Dry4r
 
     def fingerprints
       out = {}
-      walk = ->(node) do
+      walk = lambda do |node|
         out[node.serialize] = true
         node.children.each { |child| walk.call(child) }
       end
@@ -34,7 +34,11 @@ module Dry4r
     NIL_NODE = Node.new("nil", []).freeze
     IDENT = Node.new("ident", []).freeze
     METHOD_NAME = Node.new("method", []).freeze
+    OPERATORS = %i[
+      + - * / % ** & | ^ ~ ! << >> == != === < > <= >= <=> =~ !~ [] []= !
+    ].freeze
 
+    # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
     def normalize(node)
       return NIL_NODE if node.nil?
 
@@ -86,7 +90,8 @@ module Dry4r
       when Prism::AssocNode then Node.new("pair", [normalize(node.key), normalize(node.value)])
       when Prism::AssocSplatNode then Node.new("splat-pair", [normalize(node.value)])
       when Prism::SplatNode then Node.new("splat", [normalize(node.expression)])
-      when Prism::RangeNode then Node.new(node.exclude_end? ? "range-excl" : "range", [normalize(node.left), normalize(node.right)])
+      when Prism::RangeNode then Node.new(node.exclude_end? ? "range-excl" : "range",
+                                          [normalize(node.left), normalize(node.right)])
       when Prism::AndNode then Node.new("and", [normalize(node.left), normalize(node.right)])
       when Prism::OrNode then Node.new("or", [normalize(node.left), normalize(node.right)])
       when Prism::ParenthesesNode then Node.new("paren", [normalize(node.body)])
@@ -121,6 +126,7 @@ module Dry4r
         Node.new(generic_tag(node), node.compact_child_nodes.map { |c| normalize(c) })
       end
     end
+    # rubocop:enable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
 
     private
 
@@ -227,10 +233,6 @@ module Dry4r
         Prism::BlockParameterNode
       ].compact.freeze
     end
-
-    OPERATORS = %i[
-      + - * / % ** & | ^ ~ ! << >> == != === < > <= >= <=> =~ !~ [] []= !
-    ].freeze
 
     def operator_name?(name)
       OPERATORS.include?(name)

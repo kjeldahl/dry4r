@@ -129,17 +129,20 @@ Requires Ruby 3.0+.
 
 ```bash
 bundle install
-bundle exec rake spec       # run rspec
-bundle exec rake coverage   # rspec under SimpleCov
-bundle exec rake crap       # CRAP scores via crap4r
-bundle exec rake mutant     # mutation testing via mutant-rspec
+bundle exec rake             # rubocop + rspec
+bundle exec rake lint        # rubocop only
+bundle exec rake spec        # rspec only
+bundle exec rake coverage    # rspec under SimpleCov
+bundle exec rake crap        # CRAP scores via crap4r
+bundle exec rake mutant      # mutation testing via mutant-rspec
 ```
 
-The test suite uses [rspec](https://rspec.info), code coverage uses
-[SimpleCov](https://github.com/simplecov-ruby/simplecov), CRAP scoring uses
-[crap4r](https://github.com/kjeldahl/crap4r), and mutation testing uses
-[mutant](https://github.com/mbj/mutant). GitHub Actions runs the spec suite on
-Ruby 3.1, 3.2, and 3.3 on every push and pull request.
+The test suite uses [rspec](https://rspec.info), linting uses
+[rubocop](https://rubocop.org) (with `rubocop-rake` and `rubocop-rspec`), code
+coverage uses [SimpleCov](https://github.com/simplecov-ruby/simplecov), CRAP
+scoring uses [crap4r](https://github.com/kjeldahl/crap4r), and mutation testing
+uses [mutant](https://github.com/mbj/mutant). GitHub Actions runs a lint job
+and the spec suite on Ruby 3.1, 3.2, and 3.3 on every push and pull request.
 
 ## License
 

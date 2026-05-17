@@ -82,7 +82,7 @@ module Dry4r
     end
 
     def skipped_path?(path, root)
-      relative = path.sub(/\A#{Regexp.escape(root)}\/?/, "")
+      relative = path.sub(%r{\A#{Regexp.escape(root)}/?}, "")
       relative.split(File::SEPARATOR).any? { |part| SKIP_DIRECTORIES.include?(part) }
     end
 
